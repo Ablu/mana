@@ -32,6 +32,7 @@
 #include "utils/stringutils.h"
 
 #include <guichan/font.hpp>
+#include <guichan/graphics.hpp>
 
 int AvatarListBox::instances = 0;
 Image *AvatarListBox::onlineIcon = 0;
@@ -62,73 +63,52 @@ AvatarListBox::~AvatarListBox()
     }
 }
 
-void AvatarListBox::draw(gcn::Graphics *gcnGraphics)
+void AvatarListBox::drawRow(gcn::Graphics *gcnGraphics, int y, int i,
+                            int rowHeight)
 {
-    if (!mListModel)
-        return;
+    Graphics *graphics = static_cast<Graphics*>(gcnGraphics);
+    // Draw filled rectangle around the selected list element
+    if (mSelected == i)
+    {
+        graphics->setColor(Theme::getThemeColor(Theme::HIGHLIGHT,
+                                                (int) (mAlpha * 255.0f)));
+        graphics->fillRectangle(gcn::Rectangle(0, y, getWidth(), rowHeight));
+    }
+    else
+    {
+        graphics->setColor(Theme::getThemeColor(Theme::TEXT));
+    }
 
     AvatarListModel* model = static_cast<AvatarListModel*>(mListModel);
 
-    updateAlpha();
+    Avatar *a = model->getAvatarAt(i);
+    // Draw online status
+    Image *icon = a->getOnline() ? onlineIcon : offlineIcon;
+    if (icon)
+        graphics->drawImage(icon, 2, y + 1);
 
-    Graphics *graphics = static_cast<Graphics*>(gcnGraphics);
+    if (a->getDisplayBold())
+        graphics->setFont(boldFont);
 
-    graphics->setColor(Theme::getThemeColor(Theme::HIGHLIGHT,
-                                            (int) (mAlpha * 255.0f)));
-    graphics->setFont(getFont());
+    std::string text;
 
-    const int fontHeight = getFont()->getHeight();
-
-    // Draw filled rectangle around the selected list element
-    if (mSelected >= 0)
-        graphics->fillRectangle(gcn::Rectangle(0, fontHeight * mSelected,
-                                               getWidth(), fontHeight));
-
-    int newWidth = 0;
-    int width = 0;
-
-    // Draw the list elements
-    graphics->setColor(Theme::getThemeColor(Theme::TEXT));
-    for (int i = 0, y = 0;
-         i < model->getNumberOfElements();
-         ++i, y += fontHeight)
+    if (a->getMaxHp() > 0)
     {
-        Avatar *a = model->getAvatarAt(i);
-        // Draw online status
-        Image *icon = a->getOnline() ? onlineIcon : offlineIcon;
-        if (icon)
-            graphics->drawImage(icon, 2, y + 1);
-
-        if (a->getDisplayBold())
-            graphics->setFont(boldFont);
-
-        std::string text;
-
-        if (a->getMaxHp() > 0)
-        {
-            text = strprintf("%s %d/%d", a->getName().c_str(),
-                             a->getHp(), a->getMaxHp());
-        }
-        else
-        {
-            text = a->getName();
-        }
-
-        // Draw Name
-        graphics->drawText(text, 15, y);
-
-        width = graphics->getFont()->getWidth(text) + 17; // Extra right padding
-
-        if (width > newWidth)
-        {
-            newWidth = width;
-        }
-
-        if (a->getDisplayBold())
-            graphics->setFont(getFont());
+        text = strprintf("%s %d/%d", a->getName().c_str(),
+                         a->getHp(), a->getMaxHp());
+    }
+    else
+    {
+        text = a->getName();
     }
 
-    setWidth(newWidth);
+    // Draw Name
+    graphics->drawText(text, 15, y);
+
+    // TODO: resize according to max width
+
+    if (a->getDisplayBold())
+        graphics->setFont(getFont());
 }
 
 void AvatarListBox::mousePressed(gcn::MouseEvent &event)

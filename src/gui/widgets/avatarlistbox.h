@@ -47,10 +47,7 @@ public:
 
     ~AvatarListBox();
 
-    /**
-     * Draws the list box.
-     */
-    void draw(gcn::Graphics *gcnGraphics);
+    void drawRow(gcn::Graphics *graphics, int y, int i, int rowHeight);
 
     void mousePressed(gcn::MouseEvent &event);
 

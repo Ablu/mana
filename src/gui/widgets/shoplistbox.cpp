@@ -36,6 +36,9 @@
 #include <guichan/font.hpp>
 #include <guichan/listmodel.hpp>
 
+// TODO: remove
+#include "log.h"
+
 float ShopListBox::mAlpha = 1.0;
 
 ShopListBox::ShopListBox(gcn::ListModel *listModel):
@@ -69,14 +72,9 @@ void ShopListBox::setPlayersMoney(int money)
     mPlayerMoney = money;
 }
 
-void ShopListBox::draw(gcn::Graphics *gcnGraphics)
+void ShopListBox::drawRow(gcn::Graphics *gncGraphics, int y, int i,
+                          int rowHeight)
 {
-    if (!mListModel)
-        return;
-
-    if (config.getFloatValue("guialpha") != mAlpha)
-        mAlpha = config.getFloatValue("guialpha");
-
     const int alpha = (int)(mAlpha * 255.0f);
     const gcn::Color &highlightColor =
             Theme::getThemeColor(Theme::HIGHLIGHT, alpha);
@@ -87,68 +85,61 @@ void ShopListBox::draw(gcn::Graphics *gcnGraphics)
     const gcn::Color &textColor =
             Theme::getThemeColor(Theme::TEXT);
 
-    Graphics *graphics = static_cast<Graphics*>(gcnGraphics);
+    ShopItem *shopItem = mShopItems ? mShopItems->at(i) : 0;
 
+    Graphics *graphics = static_cast<Graphics*>(gncGraphics);
     graphics->setFont(getFont());
-    const int fontHeight = getFont()->getHeight();
 
-    // Draw the list elements
-    for (int i = 0, y = 0;
-         i < mListModel->getNumberOfElements();
-         ++i, y += mRowHeight)
+    if (shopItem && mPlayerMoney < shopItem->getPrice() && mPriceCheck)
     {
-        ShopItem *shopItem = mShopItems ? mShopItems->at(i) : 0;
-
-        if (shopItem && mPlayerMoney < shopItem->getPrice() && mPriceCheck)
+        if (i != mSelected)
         {
-            if (i != mSelected)
-            {
-                graphics->setColor(warningColor);
-            }
-            else
-            {
-                gcn::Color blend = warningColor;
-                blend.r = (blend.r + highlightColor.r) / 2;
-                blend.g = (blend.g + highlightColor.g) / 2;
-                blend.b = (blend.g + highlightColor.b) / 2;
-                graphics->setColor(blend);
-            }
-        }
-        else if (i == mSelected)
-        {
-            graphics->setColor(highlightColor);
+            graphics->setColor(warningColor);
         }
         else
         {
-            graphics->setColor(backgroundColor);
+            gcn::Color blend = warningColor;
+            blend.r = (blend.r + highlightColor.r) / 2;
+            blend.g = (blend.g + highlightColor.g) / 2;
+            blend.b = (blend.g + highlightColor.b) / 2;
+            graphics->setColor(blend);
         }
-
-        graphics->fillRectangle(gcn::Rectangle(0, y, getWidth(), mRowHeight));
-
-        if (shopItem)
-        {
-            if (Image *icon = shopItem->getImage())
-            {
-                icon->setAlpha(1.0f);
-                graphics->drawImage(icon, 1, y);
-            }
-
-            // Draw the item quantity when it's not just a single item
-            if (shopItem->getQuantity() > 1)
-            {
-                graphics->setColor(textColor);
-                graphics->drawText(toString(shopItem->getQuantity()),
-                                   1 + ITEM_ICON_SIZE,
-                                   y + ITEM_ICON_SIZE - fontHeight,
-                                   Graphics::RIGHT);
-            }
-        }
-
-        graphics->setColor(textColor);
-        graphics->drawText(mListModel->getElementAt(i),
-                           ITEM_ICON_SIZE + 5,
-                           y + (ITEM_ICON_SIZE - fontHeight) / 2);
     }
+    else if (i == mSelected)
+    {
+        graphics->setColor(highlightColor);
+    }
+    else
+    {
+        graphics->setColor(backgroundColor);
+    }
+
+    graphics->fillRectangle(gcn::Rectangle(0, y, getWidth(), rowHeight));
+
+    // Restore text color
+    graphics->setColor(textColor);
+
+    if (shopItem)
+    {
+        if (Image *icon = shopItem->getImage())
+        {
+            icon->setAlpha(1.0f);
+            graphics->drawImage(icon, 1, y);
+        }
+
+        // Draw the item quantity when it's not just a single item
+        if (shopItem->getQuantity() > 1)
+        {
+            graphics->drawText(toString(shopItem->getQuantity()),
+                               1 + ITEM_ICON_SIZE,
+                               y + ITEM_ICON_SIZE - rowHeight,
+                               Graphics::RIGHT);
+        }
+    }
+
+    graphics->drawText(mListModel->getElementAt(i),
+                       ITEM_ICON_SIZE + 5,
+                       y + (ITEM_ICON_SIZE - rowHeight) / 2);
 }
 
 void ShopListBox::adjustSize()

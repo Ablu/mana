@@ -22,6 +22,8 @@
 #ifndef LISTBOX_H
 #define LISTBOX_H
 
+#include <guichan/font.hpp>
+
 #include <guichan/widgets/listbox.hpp>
 
 class SelectionListener;
@@ -60,6 +62,27 @@ class ListBox : public gcn::ListBox
          */
         void updateAlpha();
 
+        /**
+         * Returns height of row i
+         * @param i index of row
+         */
+        virtual unsigned getRowHeight(int i) const
+        { return mFont->getHeight(); }
+
+        /**
+         * Draws the row i
+         * @param y The current y position (draw your row below this)
+         * @param i The index of rendered row
+         * @param rowHeight The height that the row has available
+         */
+        virtual void drawRow(gcn::Graphics *graphics, int y, int i,
+                             int rowHeight);
+
+        void setSelected(int selected);
+
+        int getSelected()
+        {return mSelected; }
+
         // Inherited from KeyListener
 
         void keyPressed(gcn::KeyEvent& keyEvent);
@@ -74,11 +97,18 @@ class ListBox : public gcn::ListBox
 
         void mouseDragged(gcn::MouseEvent &event);
 
+        virtual void logic();
+
     private:
         gcn::Font *mFont;
 
+        void recalculateHeight();
+
     protected:
+        int getIdByY(int y);
+
         static float mAlpha;
+        int mSelected;
 };
 
 #endif

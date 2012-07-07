@@ -224,10 +224,8 @@ void SellDialog::action(const gcn::ActionEvent &event)
             delete mShopItems->at(selectedItem);
             mShopItems->erase(selectedItem);
 
-            gcn::Rectangle scroll;
-            scroll.y = mShopItemList->getRowHeight() * (selectedItem + 1);
-            scroll.height = mShopItemList->getRowHeight();
-            mShopItemList->showPart(scroll);
+            // Select next item
+            mShopItemList->setSelected(selectedItem);
         }
         else
         {

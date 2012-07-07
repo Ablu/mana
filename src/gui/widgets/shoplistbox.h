@@ -47,14 +47,14 @@ class ShopListBox : public ListBox
         ~ShopListBox();
 
         /**
-         * Draws the list box.
+         * Draws row of listbox
          */
-        void draw(gcn::Graphics *graphics);
+        void drawRow(gcn::Graphics *gncGraphics, int y, int i, int rowHeight);
 
         /**
          * Returns the height of a row.
          */
-        unsigned int getRowHeight() const { return mRowHeight; }
+        unsigned int getRowHeight(int id) const { return mRowHeight; }
 
         /**
          * gives information about the current player's money

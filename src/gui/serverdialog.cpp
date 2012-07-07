@@ -112,60 +112,50 @@ public:
     {
     }
 
-    void draw(gcn::Graphics *graphics)
+    void drawRow(gcn::Graphics *graphics, int y, int i, int rowHeight)
     {
-        if (!mListModel)
-            return;
-
         ServersListModel *model = static_cast<ServersListModel*>(mListModel);
 
-        updateAlpha();
-
-        graphics->setColor(Theme::getThemeColor(Theme::HIGHLIGHT,
-                                                (int) (mAlpha * 255.0f)));
-        graphics->setFont(getFont());
-
-        const int height = getRowHeight();
+        const int height = getRowHeight(i);
         const gcn::Color unsupported =
                 Theme::getThemeColor(Theme::SERVER_VERSION_NOT_SUPPORTED,
                                      (int) (mAlpha * 255.0f));
 
+        graphics->setColor(Theme::getThemeColor(Theme::TEXT));
+
         // Draw filled rectangle around the selected list element
-        if (mSelected >= 0)
-            graphics->fillRectangle(gcn::Rectangle(0, height * mSelected,
-                                                   getWidth(), height));
-
-        // Draw the list elements
-        for (int i = 0, y = 0; i < model->getNumberOfElements();
-             ++i, y += height)
+        if (mSelected == i)
         {
-            ServerInfo info = model->getServer(i);
-
+            graphics->setColor(Theme::getThemeColor(Theme::HIGHLIGHT,
+                                                    (int) (mAlpha * 255.0f)));
+            graphics->fillRectangle(gcn::Rectangle(0, y, getWidth(), height));
             graphics->setColor(Theme::getThemeColor(Theme::TEXT));
+        }
 
-            if (!info.name.empty())
-            {
-                graphics->setFont(boldFont);
-                graphics->drawText(info.name, 2, y);
-            }
+        ServerInfo info = model->getServer(i);
 
-            graphics->setFont(getFont());
+        if (!info.name.empty())
+        {
+            graphics->setFont(boldFont);
+            graphics->drawText(info.name, 2, y);
+        }
 
-            int top = y + height / 2;
+        graphics->setFont(getFont());
 
-            graphics->drawText(model->getElementAt(i), 2, top);
+        int top = y + height / 2;
 
-            if (info.version.first > 0)
-            {
-                graphics->setColor(unsupported);
+        graphics->drawText(model->getElementAt(i), 2, top);
 
-                graphics->drawText(info.version.second,
-                                   getWidth() - info.version.first - 2, top);
-            }
+        if (info.version.first > 0)
+        {
+            graphics->setColor(unsupported);
+
+            graphics->drawText(info.version.second,
+                               getWidth() - info.version.first - 2, top);
         }
     }
 
-    unsigned int getRowHeight() const
+    unsigned int getRowHeight(int row) const
     {
         return 2 * getFont()->getHeight();
     }
