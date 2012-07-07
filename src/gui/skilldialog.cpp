@@ -146,44 +146,30 @@ public:
         return static_cast<SkillModel*>(mListModel)->getSkillAt(selected);
     }
 
-    void draw(gcn::Graphics *gcnGraphics)
+    void drawRow(gcn::Graphics *gcnGraphics, int y, int i, int height)
     {
-        if (!mListModel)
-            return;
-
         SkillModel* model = static_cast<SkillModel*>(mListModel);
-
-        updateAlpha();
 
         Graphics *graphics = static_cast<Graphics*>(gcnGraphics);
 
-        graphics->setColor(Theme::getThemeColor(Theme::HIGHLIGHT,
-                                                (int) (mAlpha * 255.0f)));
-        graphics->setFont(getFont());
-
         // Draw filled rectangle around the selected list element
-        if (mSelected >= 0)
+        if (mSelected == i)
         {
-            graphics->fillRectangle(gcn::Rectangle(0, getRowHeight() * mSelected,
-                                                   getWidth(), getRowHeight()));
+            graphics->setColor(Theme::getThemeColor(Theme::HIGHLIGHT,
+                                                    (int) (mAlpha * 255.0f)));
+            graphics->fillRectangle(gcn::Rectangle(0, height * mSelected,
+                                                   getWidth(), height));
+            graphics->setColor(Theme::getThemeColor(Theme::TEXT));
         }
+        SkillInfo *e = model->getSkillAt(i);
 
-        // Draw the list elements
-        graphics->setColor(Theme::getThemeColor(Theme::TEXT));
-        for (int i = 0, y = 1;
-             i < model->getNumberOfElements();
-             ++i, y += getRowHeight())
+        if (e)
         {
-            SkillInfo *e = model->getSkillAt(i);
-
-            if (e)
-            {
-                e->draw(graphics, y, getWidth());
-            }
+            e->draw(graphics, y, getWidth());
         }
     }
 
-    unsigned int getRowHeight() const { return 34; }
+    unsigned int getRowHeight(int i) const { return 34; }
 };
 
 class SkillTab : public Tab

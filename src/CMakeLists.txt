@@ -279,6 +279,8 @@ SET(SRCS
     gui/palette.h
     gui/popupmenu.cpp
     gui/popupmenu.h
+    gui/questlogwindow.cpp
+    gui/questlogwindow.h
     gui/quitdialog.cpp
     gui/quitdialog.h
     gui/recorder.cpp

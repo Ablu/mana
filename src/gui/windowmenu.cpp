@@ -40,6 +40,7 @@
 
 extern Window *equipmentWindow;
 extern Window *inventoryWindow;
+extern Window *questLogWindow;
 extern Window *itemShortcutWindow;
 extern Window *setupWindow;
 extern Window *statusWindow;
@@ -57,6 +58,7 @@ WindowMenu::WindowMenu():
               KeyboardConfig::KEY_WINDOW_INVENTORY);
     addButton(N_("Equipment"), x, h, "button-icon-equipment.png",
               KeyboardConfig::KEY_WINDOW_EQUIPMENT);
+    addButton(N_("Questlog"), x, h, "button-icon-inventory.png");
 
     if (skillDialog->hasSkills())
         addButton(N_("Skills"), x, h, "button-icon-skills.png",
@@ -118,6 +120,10 @@ void WindowMenu::action(const gcn::ActionEvent &event)
     else if (event.getId() == "Inventory")
     {
         window = inventoryWindow;
+    }
+    else if (event.getId() == "Questlog")
+    {
+        window = questLogWindow;
     }
     else if (event.getId() == "Skills")
     {

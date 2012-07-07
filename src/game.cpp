@@ -54,6 +54,7 @@
 #include "gui/npcdialog.h"
 #include "gui/okdialog.h"
 #include "gui/outfitwindow.h"
+#include "gui/questlogwindow.h"
 #include "gui/quitdialog.h"
 #include "gui/sdlinput.h"
 #include "gui/setup.h"
@@ -100,6 +101,7 @@ ChatWindow *chatWindow;
 StatusWindow *statusWindow;
 MiniStatusWindow *miniStatusWindow;
 InventoryWindow *inventoryWindow;
+QuestLogWindow *questLogWindow;
 SkillDialog *skillDialog;
 Minimap *minimap;
 EquipmentWindow *equipmentWindow;
@@ -156,6 +158,7 @@ static void createGuiWindows()
     equipmentWindow = new EquipmentWindow(PlayerInfo::getEquipment());
     statusWindow = new StatusWindow;
     inventoryWindow = new InventoryWindow(PlayerInfo::getInventory());
+    questLogWindow = new QuestLogWindow;
     skillDialog = new SkillDialog;
     helpWindow = new HelpWindow;
     debugWindow = new DebugWindow;
@@ -188,6 +191,7 @@ static void destroyGuiWindows()
     del_0(statusWindow)
     del_0(miniStatusWindow)
     del_0(inventoryWindow)
+    del_0(questLogWindow);
     del_0(skillDialog)
     del_0(minimap)
     del_0(equipmentWindow)
@@ -647,6 +651,7 @@ void Game::handleInput()
                         {
                             statusWindow->setVisible(false);
                             inventoryWindow->setVisible(false);
+                            questLogWindow->setVisible(false);
                             skillDialog->setVisible(false);
                             setupWindow->setVisible(false);
                             equipmentWindow->setVisible(false);

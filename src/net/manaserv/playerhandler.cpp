@@ -79,6 +79,7 @@ PlayerHandler::PlayerHandler()
         GPMSG_RAISE_ATTRIBUTE_RESPONSE,
         GPMSG_LOWER_ATTRIBUTE_RESPONSE,
         GPMSG_SPECIAL_STATUS,
+        GPMSG_QUESTLOG_STATUS,
         0
     };
     handledMessages = _messages;
@@ -277,6 +278,22 @@ void PlayerHandler::handleMessage(MessageIn &msg)
             }
             break;
         */
+        case GPMSG_QUESTLOG_STATUS:
+        {
+            int id = msg.readInt16();
+            int status = msg.readInt8();
+            int notification = msg.readInt8();
+            std::string summary = msg.readString();
+            std::string description = msg.readString();
+
+            Event questEvent(Event::QuestStatus);
+            questEvent.setInt("id", id);
+            questEvent.setInt("status", status);
+            questEvent.setBool("notification", notification);
+            questEvent.setString("summary", summary);
+            questEvent.setString("description", description);
+            Event::trigger(Event::QuestLogChannel, questEvent);
+        } break;
     }
 }
 

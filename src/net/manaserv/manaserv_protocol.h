@@ -243,6 +243,9 @@ enum {
     PCMSG_USER_MODE                   = 0x0465, // W channel id, S name, B mode
     PCMSG_KICK_USER                   = 0x0466, // W channel id, S name
 
+    // Questlog
+    GPMSG_QUESTLOG_STATUS       = 0x0470, // W id, B status, B notification, S questname, S questdescription
+
     // Inter-server
     GAMSG_REGISTER              = 0x0500, // S address, W port, S password, D items db revision, { W map id }*
     AGMSG_REGISTER_RESPONSE     = 0x0501, // W item version, W password response, { S globalvar_key, S globalvar_value }

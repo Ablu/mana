@@ -159,6 +159,8 @@ class Theme : public Palette, public EventListener
             ARMS,
             AMMO,
             SERVER_VERSION_NOT_SUPPORTED,
+            QUEST_TODO,
+            QUEST_DOING,
             THEME_COLORS_END
         };
 
