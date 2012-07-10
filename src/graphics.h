@@ -189,12 +189,12 @@ class Graphics : public gcn::SDLGraphics
         virtual void updateScreen();
 
         /**
-         * Returns the width of the screen.
+         * Returns the width of the drawable surface.
          */
         int getWidth() const { return mWidth; }
 
         /**
-         * Returns the height of the screen.
+         * Returns the height of the drawable surface.
          */
         int getHeight() const { return mHeight; }
 
@@ -235,6 +235,7 @@ class Graphics : public gcn::SDLGraphics
         bool mFullscreen;
         bool mHWAccel;
         BlitMode mBlitMode;
+        SDL_Surface *mScreenSurface;
 };
 
 extern Graphics *graphics;
