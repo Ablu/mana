@@ -306,6 +306,10 @@ void Viewport::logic()
 void Viewport::_followMouse()
 {
     Uint8 button = SDL_GetMouseState(&mMouseX, &mMouseY);
+
+    mMouseX /= graphics->getScale();
+    mMouseY /= graphics->getScale();
+
     // If the left button is dragged
     if (mPlayerFollowMouse && button & SDL_BUTTON(1))
     {
@@ -332,6 +336,9 @@ void Viewport::_drawDebugPath(Graphics *graphics)
     {
         // Get the current mouse position
         SDL_GetMouseState(&mMouseX, &mMouseY);
+
+        mMouseX /= graphics->getScale();
+        mMouseY /= graphics->getScale();
 
         // Prepare the walkmask corresponding to the protocol
         unsigned char walkMask;
