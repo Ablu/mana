@@ -199,8 +199,6 @@ Setup_Video::Setup_Video():
     place(2, 4, mFpsCheckBox);
     place(3, 4, mFpsSlider, 2);
     place(5, 4, mFpsLabel);
-
-    setDimension(gcn::Rectangle(0, 0, 370, 300));
 }
 
 Setup_Video::~Setup_Video()
