@@ -265,7 +265,8 @@ void Setup_Video::apply()
             }
             else
             {
-                Client::instance()->videoResized(screenWidth, screenHeight);
+                Client::instance()->videoResized(graphics->getWidth(),
+                                                 graphics->getHeight());
 
                 config.setValue("screen", fullscreen);
                 config.setValue("screenwidth", screenWidth);
