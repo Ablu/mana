@@ -179,7 +179,7 @@ void Viewport::draw(gcn::Graphics *gcnGraphics)
     {
         mPixelViewX = player_x;
         mPixelViewY = player_y;
-    };
+    }
 
     // Don't move camera so that the end of the map is on screen
     const int mapWidthPixels = mMap->getWidth() * mMap->getTileWidth();
@@ -268,9 +268,6 @@ void Viewport::draw(gcn::Graphics *gcnGraphics)
                                gcn::Graphics::CENTER);
         }
     }
-
-    if (miniStatusWindow)
-        miniStatusWindow->drawIcons(graphics);
 
     // Draw contained widgets
     WindowContainer::draw(gcnGraphics);
